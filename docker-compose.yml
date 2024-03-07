@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  db:
+    image: postgres
+    container_name: ecomdb
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=athun123
+      - POSTGRES_DB=ecom
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    networks:
+      - ecom-network
+
+  app:
+    image: athunlal/ecomapp:latest
+    ports:
+      - "9001:4000"
+    depends_on:
+      - db
+    restart: always
+    environment:
+      DB_URL: "host=ecomdb user=postgres password=athun123 dbname=ecom5 port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+    networks:
+      - ecom-network
+
+networks:
+  ecom-network:
+    driver: bridge
